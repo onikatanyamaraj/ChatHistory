@@ -1,4 +1,7 @@
+# 这段是聊天窗口应用代码。功能包括展示历史聊天记录，进行聊天新建，删除，重命名等操作
+
 from helper import *
+
 import streamlit as st
 import uuid
 import copy
@@ -8,6 +11,7 @@ from requests.models import ChunkedEncodingError
 from streamlit.components import v1
 from voice_toolkit import voice_toolkit
 
+# 设置了整个页面的标题和图标
 st.set_page_config(page_title='Chat History', layout='wide', page_icon='🤖')
 # 自定义元素样式
 st.markdown(css_code, unsafe_allow_html=True)
@@ -334,10 +338,14 @@ def get_model_input():
     }
     return history, paras
 
-
+# st.session_state是用于存储应用程序状态的字典，存储用户输入于聊天机器人的相应
+# st.session_state是
 if st.session_state['user_input_content'] != '':
+    # 如果st.session_state的用户输入为空
     if 'r' in st.session_state:
+        # 如果session_state中有r
         st.session_state.pop("r")
+        # 将r弹出
         st.session_state[current_chat + 'report'] = ""
     st.session_state['pre_user_input_content'] = st.session_state['user_input_content']
     st.session_state['user_input_content'] = ''
