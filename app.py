@@ -198,7 +198,7 @@ area_gpt_content = st.empty()
 area_error = st.empty()
 
 st.write("\n")
-st.header('ChatGPT Assistant')
+st.header('Chat History')
 tap_input, tap_context, tap_model, tab_func = st.tabs(['💬 聊天', '🗒️ 预设', '⚙️ 模型', '🛠️ 功能'])
 
 with tap_context:
