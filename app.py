@@ -1,4 +1,5 @@
 # 这段是聊天窗口应用代码。功能包括展示历史聊天记录，进行聊天新建，删除，重命名等操作
+import requests
 
 from helper import *
 
@@ -319,7 +320,7 @@ with tap_input:
                 st.session_state['voice_flag'] = 'final'
                 st.experimental_rerun()
 
-
+# 获取模型输入，包括历史记录和设定的模型参数。历史记录调用get_history_input()获取，该函数将聊天记录转换为模型需要的数据格式。
 def get_model_input():
     # 需输入的历史记录
     context_level = st.session_state['context_level' + current_chat]
@@ -339,23 +340,38 @@ def get_model_input():
     return history, paras
 
 # st.session_state是用于存储应用程序状态的字典，存储用户输入于聊天机器人的相应
-# st.session_state是
+# st.session_state是Streamlit应用程序中非常有用的状态管理工具
 if st.session_state['user_input_content'] != '':
-    # 如果st.session_state的用户输入为空
+    # 如果st.session_state的用户输入不为空
     if 'r' in st.session_state:
         # 如果session_state中有r
         st.session_state.pop("r")
         # 将r弹出
         st.session_state[current_chat + 'report'] = ""
+        # 清除任何之前的响应并保存用户输入
     st.session_state['pre_user_input_content'] = st.session_state['user_input_content']
+    # 将本次输入转给上次输入
     st.session_state['user_input_content'] = ''
+    # 用户输入内容清空
+
     # 临时展示
     show_each_message(st.session_state['pre_user_input_content'], 'user', 'tem',
                       [area_user_svg.markdown, area_user_content.markdown])
     # 模型输入
     history_need_input, paras_need_input = get_model_input()
-    # 调用接口
+    # 返回输入的历史聊天记录和输入的参数，两者以模型需要的数据格式呈现
     with st.spinner("🤔"):
+        try:
+            # Send a POST request to the specified URL with the model input data
+            response = requests.post('http://your-backend-url.com', json={'history': history_need_input, 'parameters': paras_need_input})
+            # Do something with the response, such as displaying it to the user
+            st.write(response.text)
+        except requests.exceptions.RequestException as e:
+            # Handle any errors that may occur
+            st.error(f"Error sending request: {e}")
+
+    # 调用openAI接口，先注释掉
+    """ with st.spinner("🤔"):
         try:
             if apikey := st.session_state['apikey_input']:
                 openai.api_key = apikey
@@ -378,7 +394,7 @@ if st.session_state['user_input_content'] != '':
         else:
             st.session_state["chat_of_r"] = current_chat
             st.session_state["r"] = r
-            st.experimental_rerun()
+            st.experimental_rerun() """
 
 if ("r" in st.session_state) and (current_chat == st.session_state["chat_of_r"]):
     if current_chat + 'report' not in st.session_state:
