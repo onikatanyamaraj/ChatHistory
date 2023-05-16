@@ -363,7 +363,7 @@ if st.session_state['user_input_content'] != '':
     with st.spinner("🤔"):
         try:
             # Send a POST request to the specified URL with the model input data
-            response = requests.post('http://your-backend-url.com', json={'history': history_need_input, 'parameters': paras_need_input})
+            response = requests.post('124.127.66.237:5000', json={'history': history_need_input, 'parameters': paras_need_input})
             # Do something with the response, such as displaying it to the user
             st.write(response.text)
         except requests.exceptions.RequestException as e:
